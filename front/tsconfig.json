@@ -22,7 +22,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/_app.tsx"  ],
+, "pages/_app.tsx", "store/configureStore.js", "componets/Applayout.tsx", "reducers/index.js"  ],
   "exclude": [
     "node_modules"
   ]
