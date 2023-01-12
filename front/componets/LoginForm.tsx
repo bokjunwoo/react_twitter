@@ -2,8 +2,9 @@ import React, { useCallback, useState } from 'react'
 import { Button, Form, Input } from 'antd'
 import Link from 'next/link'
 import styled from 'styled-components'
-import { SetIsLoginProps } from '../types'
 import userInput from '../hooks/userInput'
+import { useDispatch } from 'react-redux'
+import { loginAction } from '../reducers/user'
 
 const ButtonWrapper = styled.div`
   margin-top: 10px;
@@ -12,14 +13,15 @@ const FormWrapper = styled(Form)`
   padding: 10px;
 `
 
-export default function LoginForm({ setIsLogin }:SetIsLoginProps){
+export default function LoginForm(){
+  const dispatch = useDispatch();
   const [id, onChangeId] = userInput('')
   const [pw, onChangePw] = userInput('')
 
   const onSubmitForm = useCallback((e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     console.log(id, pw);
-    setIsLogin(true);
+    dispatch(loginAction({ id, pw }))
   }, [id, pw])
   
   return (
