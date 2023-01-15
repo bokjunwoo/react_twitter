@@ -1,12 +1,24 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Applayout from '../componets/Applayout'
 import Head from 'next/head'
 import NickNameEdition from '../componets/NickNameEdition';
 import FollowList from '../componets/FollowList';
+import { useSelector } from 'react-redux';
+import Router from 'next/router'
 
 export default function Profile() {
-  const followerList:{nickName: string}[] = [{ nickName: '예은'}, {nickName: '지원'},  {nickName: '준우'}];
-  const followingList:{nickName: string}[] = [{ nickName: '예은'}, {nickName: '지원'},  {nickName: '준우'}];
+  const { user } = useSelector((state) => state.user)
+
+  useEffect(() => {
+    if(!(user && user.id)) {
+      Router.push('/')
+    }
+  }, [user && user.id])
+
+  if (!user) {
+    return null
+  }
+
   return (
     <>
       <Head>
@@ -14,8 +26,8 @@ export default function Profile() {
       </Head>
       <Applayout>
         <NickNameEdition />
-        <FollowList header='팔로잉 목록' data={followingList}/>
-        <FollowList header='팔로워 목록' data={followerList}/>
+        <FollowList header='팔로잉' data={user.Followings}/>
+        <FollowList header='팔로워' data={user.Followers}/>
       </Applayout>
     </>
   )
