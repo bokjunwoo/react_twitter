@@ -26,7 +26,7 @@ const SearchInput = styled(Input.Search)`
 `
 
 export default function Applayout({ children }) {
-  const isLogin = useSelector((state) => state.user.isLogin)
+  const { user } = useSelector((state) => state.user)
   
   return (
     <div>
@@ -47,7 +47,7 @@ export default function Applayout({ children }) {
       </Menu>
       <Row gutter={8}>
         <Col xs={24} md={6}>
-          {isLogin ? <UserProfile /> : <LoginForm />}
+          {user ? <UserProfile /> : <LoginForm />}
         </Col>
         <Col xs={24} md={12}>
         {children}
