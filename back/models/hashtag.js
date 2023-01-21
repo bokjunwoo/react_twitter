@@ -8,6 +8,8 @@ module.exports = (sequelize, DataTypes) => {
     charset: 'utf8mb4', //mb4 이모티콘저장 가능
     collate: 'utf8mb4_general_ci', // 한글 저장
   });
-  Hashtag.associate = (db) => {};
+  Hashtag.associate = (db) => {
+    db.Hashtag.belongsToMany(db.Post, { through: 'PostHashtag' }); // 다대다
+  };
   return Hashtag
 }
