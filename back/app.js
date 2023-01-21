@@ -1,9 +1,12 @@
 const express = require('express');
+const cors = require('cors')
 const db = require('./models');
 
-const userRouter = require('./routers/user')
-
 const app = express();
+
+app.use(cors({
+  origin: '*'
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -14,7 +17,8 @@ db.sequelize.sync()
   })
   .catch(console.error);
 
-app.use('user', userRouter)
+const userRouter = require('./routers/user')
+app.use('/user', userRouter)
 
 app.listen(3333, () => {
   console.log('서버 실행중')
