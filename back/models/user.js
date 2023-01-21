@@ -5,13 +5,13 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false, // 필수
       unique: true, // 고유한 값
     },
-    nickNmae: {
+    nickName: {
       type: DataTypes.STRING(10),
       allowNull : false,
       unique: true,
     },
     pw: {
-      type: DataTypes.STRING(30),
+      type: DataTypes.STRING(100),
       allowNull : false, // 필수
     },
   }, {
