@@ -4,16 +4,15 @@ import { LOG_IN_SUCCESS, LOG_IN_FAILURE, LOG_IN_REQUEST, LOG_OUT_FAILURE, LOG_OU
 
 // 로그인
 function logInAPI(data) {
-  return axios.post('/api/login', data)
+  return axios.post('/user/login', data)
 }
 
 function* logIn(action) {
   try {
-    yield delay(1000)
-    // const result = yield call(logInAPI, action.data);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data
+      data: result.data
     });
   } catch (err) {
     yield put({
@@ -25,13 +24,12 @@ function* logIn(action) {
 
 // 로그아웃
 function logOutAPI() {
-  return axios.post('/api/logout')
+  return axios.post('/user/logout')
 }
 
 function* logOut() {
   try {
-    yield delay(1000)
-    // const result = yield call(logOutAPI);
+    yield call(logOutAPI);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
@@ -44,14 +42,14 @@ function* logOut() {
 }
 
 // 회원가입
-function signUpAPI() {
-  return axios.post('/api/signup')
+function signUpAPI(data) {
+  return axios.post('/user/signup', data)
 }
 
-function* signUp() {
+function* signUp(action) {
   try {
-    yield delay(1000)
-    // const result = yield call(signUpAPI);
+    const result = yield call(signUpAPI, action.data);
+    console.log(result)
     yield put({
       type: SIGN_UP_SUCCESS,
     });
