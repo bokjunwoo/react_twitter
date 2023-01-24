@@ -5,6 +5,7 @@ import postSaga from './post'
 import axios from 'axios';
 
 axios.defaults.baseURL = 'http://localhost:3333';
+axios.defaults.withCredentials = true // 쿠키 정보 전달
 
 export default function* rootSaga() {
   yield all([ // all 동시에 실행

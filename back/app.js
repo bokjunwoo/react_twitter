@@ -13,7 +13,8 @@ passportConfig();
 const app = express();
 
 app.use(cors({
-  origin: '*'
+  origin: 'http://localhost:3000',
+  credentials: true // 쿠키도 허용
 }));
 
 app.use(express.json());
@@ -35,6 +36,9 @@ db.sequelize.sync()
 
 const userRouter = require('./routers/user')
 app.use('/user', userRouter)
+
+const postRouter = require('./routers/post')
+app.use('/post', postRouter)
 
 app.listen(3333, () => {
   console.log('서버 실행중')
