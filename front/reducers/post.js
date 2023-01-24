@@ -85,26 +85,6 @@ export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST'
 export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS'
 export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE'
 
-const dummyPost = (data) => ({
-  id: data.id,
-  content: data.content,
-  User: {
-    id: 1,
-    nickName: '준우'
-  },
-  Images: [],
-  Comments: [],
-})
-
-const dummyComment = (data) => ({
-  id: shortId.generate(),
-  content: data,
-  User: {
-    id: 1,
-    nickName: '준우'
-  },
-})
-
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
   data,
@@ -139,7 +119,7 @@ const reducer = (state = initialState, action) => {
         draft.addPostError = null;
         break
       case ADD_POST_SUCCESS:
-        draft.mainPosts.unshift(dummyPost(action.data))
+        draft.mainPosts.unshift(action.data)
         draft.addPostLoading = false;
         draft.addPostDone = true;
         break
@@ -168,7 +148,7 @@ const reducer = (state = initialState, action) => {
         break
       case ADD_COMMENT_SUCCESS:
         const post = draft.mainPosts.find((v) => v.id === action.data.postId);
-        post.Comments.unshift(dummyComment(action.data.content));
+        post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;
         // const postIndex = state.mainPosts.findIndex((v) => v.id === action.data.postId)
