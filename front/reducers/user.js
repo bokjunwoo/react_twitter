@@ -1,6 +1,9 @@
 import produce from 'immer'
 
 export const initialState = {
+  loadUserloading: false, // 유저 정보 가져오기 시도중
+  loadUserDone: false,
+  loadUserError: null,
   logInLoading: false, // 로그인 시도중
   logInDone: false,
   logInError: null,
@@ -21,14 +24,9 @@ export const initialState = {
   unfollowError: null,
 }
 
-const dummyUser = (data) => ({
-  ...data,
-  nickName: '준우',
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [{ nickName: '예은' }],
-  Followers: [{ nickName: '예은' }],
-})
+export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST'
+export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS'
+export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE'
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST'
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS'
@@ -69,6 +67,20 @@ export const logoutRequestAction = () => {
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadUserloading = true;
+        draft.loadUserError = null;
+        draft.loadUserDone = false;
+        break
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadUserloading = false;
+        draft.loadUserDone = true;
+        draft.user = action.data
+        break
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadUserloading = false;
+        draft.loadUserError = action.error;
+        break
       case LOG_IN_REQUEST:
         draft.logInLoading = true;
         draft.logInError = null;
@@ -77,7 +89,7 @@ const reducer = (state = initialState, action) => {
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
         draft.logInDone = true;
-        draft.user = dummyUser(action.data)
+        draft.user = action.data
         break
       case LOG_IN_FAILURE:
         draft.logInLoading = false;
@@ -99,7 +111,7 @@ const reducer = (state = initialState, action) => {
         break
       case SIGN_UP_REQUEST:
         draft.signUpLoading = true;
-        draft.signUpDone = true;
+        draft.signUpDone = false;
         draft.signUpError = null;
         break
       case SIGN_UP_SUCCESS:

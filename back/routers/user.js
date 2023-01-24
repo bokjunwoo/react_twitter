@@ -6,6 +6,37 @@ const passport = require('passport');
 
 const router = express.Router();
 
+router.get('/', async (req, res, next) => {
+  try {
+    if(req.user) {
+      const fullUserWuthoutPassword = await User.findOne({
+        where: { id: req.user.id },
+        attributes: {
+          exclude: ['pw']
+        },
+        include: [{
+          model: Post,
+          attributes: ['id']
+        }, {
+          model: User,
+          as: 'Followings',
+          attributes: ['id']
+        }, {
+          model: User,
+          as: 'Followers',
+          attributes: ['id']
+        }]
+      })
+      res.status(200).json(fullUserWuthoutPassword)
+    } else {
+      res.status(200).json(null)
+    }
+  } catch(error) {
+    console.error(error);
+    next(error)
+  }
+})
+
 router.post('/signup', isNotLoggendIn, async (req, res, next) => {
   try {
     const exUser = await User.findOne({
@@ -54,12 +85,15 @@ router.post('/login', (req, res, next) => {
         },
         include: [{
           model: Post,
+          attributes: ['id']
         }, {
           model: User,
           as: 'Followings',
+          attributes: ['id']
         }, {
           model: User,
           as: 'Followers',
+          attributes: ['id']
         }]
       })
       return res.status(200).json(fullUserWuthoutPassword);
