@@ -48,7 +48,7 @@ export const initialState = {
   addCommentDone: false,
   addCommentError: null,
 }
-
+/*
 export const generateDummyPost = (number) => Array(number).fill().map((v, i) => ({
   id: shortId.generate(),
   User: {
@@ -67,7 +67,7 @@ export const generateDummyPost = (number) => Array(number).fill().map((v, i) => 
     content: faker.lorem.sentence()
   }]
 }));
-
+*/
 
 export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST'
 export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS'
@@ -147,7 +147,7 @@ const reducer = (state = initialState, action) => {
         draft.addCommentError = null;
         break
       case ADD_COMMENT_SUCCESS:
-        const post = draft.mainPosts.find((v) => v.id === action.data.postId);
+        const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
         post.Comments.unshift(action.data);
         draft.addCommentLoading = false;
         draft.addCommentDone = true;

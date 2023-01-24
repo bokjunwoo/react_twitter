@@ -5,21 +5,21 @@ import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from '../reducers/user';
 
 // 로딩
 function loadPostsAPI(data) {
-  return axios.post('/api/post', data)
+  return axios.get('/posts', data)
 }
 
 function* loadPosts(action) {
   try {
-    // const result = yield call(addPostAPI, action.data);
-    yield delay(1000)
+    const result = yield call(loadPostsAPI, action.data);
     yield put({
       type: LOAD_POSTS_SUCCESS,
-      data: generateDummyPost(10),
+      data: result.data
     });
-  } catch (err) {
+  } catch (error) {
+    console.error(error)
     yield put({
       type: LOAD_POSTS_FAILURE,
-      error: err.response.data
+      error: error.response.data
     })
   }
 }
@@ -40,10 +40,11 @@ function* addPost(action) {
       type: ADD_POST_TO_ME,
       data: result.data.id
     })
-  } catch (err) {
+  } catch (error) {
+    console.error(error)
     yield put({
       type: ADD_POST_FAILURE,
-      error: err.response.data
+      error: error.response.data
     })
   }
 }
@@ -85,10 +86,11 @@ function* addComment(action) {
       type: ADD_COMMENT_SUCCESS,
       data: result.data
     });
-  } catch (err) {
+  } catch (error) {
+    console.error(error)
     yield put({
       type: ADD_COMMENT_FAILURE,
-      error: err.response.data
+      error: error.response.data
     })
   }
 }

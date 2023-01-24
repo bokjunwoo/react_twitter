@@ -1,5 +1,6 @@
 const express = require('express');
-const { Post, Image, Comment, User } = require('../models')
+const { Post, Image, Comment, User } = require('../models');
+const user = require('../models/user');
 const { isLoggendIn } = require('./middlewares')
 
 const router = express.Router();
@@ -16,6 +17,10 @@ router.post('/', isLoggendIn, async (req, res, next) => {
         model: Image,
       }, {
         model: Comment,
+        include: [{
+          model: User,
+          attributes: ['id', 'nickName']
+        }]
       }, {
         model: User,
       }]
@@ -37,9 +42,17 @@ router.post('/:postId/comment', isLoggendIn, async (req, res, next) => {
     }
     const comment = await Comment.create({
       content: req.body.content,
-      PostId: req.params.postId
+      PostId: parseInt(req.params.postId, 10),
+      UserId: req.user.id
     });
-    res.status(201).json(comment)
+    const fullComment = await Comment.findOne({
+      where: { id: comment.id },
+      include: [{
+        model: User,
+        attributes: ['id', 'nickName']
+      }]
+    })
+    res.status(201).json(fullComment)
   } catch(error) {
     console.error(error)
     next(error)
