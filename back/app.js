@@ -6,6 +6,7 @@ const session = require('express-session');
 const passport = require('passport')
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const morgan = require('morgan')
 
 dotenv.config();
 passportConfig();
@@ -27,6 +28,7 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(morgan('dev'))
 
 db.sequelize.sync()
   .then(() => {
@@ -39,6 +41,9 @@ app.use('/user', userRouter)
 
 const postRouter = require('./routers/post')
 app.use('/post', postRouter)
+
+const postsRouter = require('./routers/posts')
+app.use('/posts', postsRouter)
 
 app.listen(3333, () => {
   console.log('서버 실행중')
