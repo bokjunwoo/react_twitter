@@ -22,6 +22,9 @@ export const initialState = {
   unfollowLoading: false, // 팔로우 시도중
   unfollowDone: false,
   unfollowError: null,
+  changeNicknameLoading: false, // 팔로우 시도중
+  changeNicknameDone: false,
+  changeNicknameError: null,
 }
 
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST'
@@ -47,6 +50,10 @@ export const FOLLOW_FAILURE = 'FOLLOW_FAILURE'
 export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST'
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS'
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE'
+
+export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST'
+export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS'
+export const CHANGE_NICKNAME_FAILURE = 'CHANGE_NICKNAME_FAILURE'
 
 export const ADD_POST_TO_ME = 'ADD_POST_TO_ME'
 export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME'
@@ -170,6 +177,20 @@ const reducer = (state = initialState, action) => {
       case UNFOLLOW_FAILURE:
         draft.unfollowLoading = false;
         draft.unfollowError = action.error;
+        break
+      case CHANGE_NICKNAME_REQUEST:
+        draft.changeNicknameLoading = true;
+        draft.changeNicknameError = null;
+        draft.changeNicknameDone = false;
+        break
+      case CHANGE_NICKNAME_SUCCESS:
+        draft.changeNicknameLoading = false;
+        draft.changeNicknameDone = true;
+        draft.user.nickName = action.data.nickName;
+        break
+      case CHANGE_NICKNAME_FAILURE:
+        draft.changeNicknameLoading = false;
+        draft.changeNicknameError = action.error;
         break
       default:
         return state;
