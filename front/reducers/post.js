@@ -1,6 +1,4 @@
-import shortId from 'shortid'
 import produce from 'immer'
-import { faker } from '@faker-js/faker'
 
 export const initialState = {
   mainPosts: [
@@ -56,6 +54,9 @@ export const initialState = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 }
 /*
 export const generateDummyPost = (number) => Array(number).fill().map((v, i) => ({
@@ -106,6 +107,10 @@ export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST'
 export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS'
 export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE'
 
+export const RETWEET_REQUEST = 'RETWEET_REQUEST'
+export const RETWEET_SUCCESS = 'RETWEET_SUCCESS'
+export const RETWEET_FAILURE = 'RETWEET_FAILURE'
+
 export const REMOVE_IMAGE = 'REMOVE_IMAGE'
 
 export const addPost = (data) => ({
@@ -129,8 +134,8 @@ const reducer = (state = initialState, action) => {
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.hasMorePosts = draft.mainPosts.length < 50;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = action.data.length === 10;
         break
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
@@ -237,6 +242,21 @@ const reducer = (state = initialState, action) => {
       case UPLOAD_IMAGES_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
+        break
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break
+      case RETWEET_SUCCESS: {
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        draft.mainPosts.unshift(action.data)
+        break
+      }
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
         break
       case REMOVE_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
