@@ -3,11 +3,23 @@ import Applayout from '../componets/Applayout'
 import Head from 'next/head'
 import NickNameEdition from '../componets/NickNameEdition';
 import FollowList from '../componets/FollowList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Router from 'next/router'
+import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from '../reducers/user';
 
 export default function Profile() {
+  const dispatch = useDispatch();
+
   const { user } = useSelector((state) => state.user)
+
+  useEffect(() => {
+    dispatch({
+      type: LOAD_FOLLOWERS_REQUEST
+    });
+    dispatch({
+      type: LOAD_FOLLOWINGS_REQUEST
+    })
+  }, [])
 
   useEffect(() => {
     if(!(user && user.id)) {

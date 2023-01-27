@@ -22,6 +22,15 @@ export const initialState = {
   unfollowLoading: false, // 팔로우 시도중
   unfollowDone: false,
   unfollowError: null,
+  loadFollwersLoading: false,
+  loadFollwersDone: false,
+  loadFollwersError: null,
+  loadFollwingsLoading: false,
+  loadFollwingsDone: false,
+  loadFollwingsError: null,
+  removeFollowerLoading: false,
+  removeFollowerDone: false,
+  removeFollowerError: null,
   changeNicknameLoading: false, // 팔로우 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
@@ -50,6 +59,18 @@ export const FOLLOW_FAILURE = 'FOLLOW_FAILURE'
 export const UNFOLLOW_REQUEST = 'UNFOLLOW_REQUEST'
 export const UNFOLLOW_SUCCESS = 'UNFOLLOW_SUCCESS'
 export const UNFOLLOW_FAILURE = 'UNFOLLOW_FAILURE'
+
+export const REMOVE_FOLLOWER_REQUEST = 'REMOVE_FOLLOWER_REQUEST'
+export const REMOVE_FOLLOWER_SUCCESS = 'REMOVE_FOLLOWER_SUCCESS'
+export const REMOVE_FOLLOWER_FAILURE = 'REMOVE_FOLLOWER_FAILURE'
+
+export const LOAD_FOLLOWERS_REQUEST = 'LOAD_FOLLOWERS_REQUEST'
+export const LOAD_FOLLOWERS_SUCCESS = 'LOAD_FOLLOWERS_SUCCESS'
+export const LOAD_FOLLOWERS_FAILURE = 'LOAD_FOLLOWERS_FAILURE'
+
+export const LOAD_FOLLOWINGS_REQUEST = 'LOAD_FOLLOWINGS_REQUEST'
+export const LOAD_FOLLOWINGS_SUCCESS = 'LOAD_FOLLOWINGS_SUCCESS'
+export const LOAD_FOLLOWINGS_FAILURE = 'LOAD_FOLLOWINGS_FAILURE'
 
 export const CHANGE_NICKNAME_REQUEST = 'CHANGE_NICKNAME_REQUEST'
 export const CHANGE_NICKNAME_SUCCESS = 'CHANGE_NICKNAME_SUCCESS'
@@ -158,7 +179,7 @@ const reducer = (state = initialState, action) => {
       case FOLLOW_SUCCESS:
         draft.followLoading = false;
         draft.followDone = true;
-        draft.user.Followings.push({ id: action.data })
+        draft.user.Followings.push({ id: action.data.UserId })
         break
       case FOLLOW_FAILURE:
         draft.followLoading = false;
@@ -172,11 +193,53 @@ const reducer = (state = initialState, action) => {
       case UNFOLLOW_SUCCESS:
         draft.unfollowLoading = false;
         draft.unfollowDone = true;
-        draft.user.Followings = draft.user.Followings.filter((v) => v.id !== action.data);
+        draft.user.Followings = draft.user.Followings.filter((v) => v.id !== action.data.UserId);
         break
       case UNFOLLOW_FAILURE:
         draft.unfollowLoading = false;
         draft.unfollowError = action.error;
+        break
+      case LOAD_FOLLOWERS_REQUEST:
+        draft.loadFollwersLoading = true;
+        draft.loadFollwersDone = false;
+        draft.loadFollwersError = null;
+        break
+      case LOAD_FOLLOWERS_SUCCESS:
+        draft.loadFollwersLoading = false;
+        draft.loadFollwersDone = true;
+        draft.user.Followers = action.data
+        break
+      case LOAD_FOLLOWERS_FAILURE:
+        draft.loadFollwersLoading = false;
+        draft.loadFollwersError = action.error;
+        break
+      case LOAD_FOLLOWINGS_REQUEST:
+        draft.loadFollwingsLoading = true;
+        draft.loadFollwingsDone = false;
+        draft.loadFollwingsError = null;
+        break
+      case LOAD_FOLLOWINGS_SUCCESS:
+        draft.loadFollwingsLoading = false;
+        draft.loadFollwingsDone = true;
+        draft.user.Followings = action.data
+        break
+      case LOAD_FOLLOWINGS_FAILURE:
+        draft.loadFollwingsLoading = false;
+        draft.loadFollwingsError = action.error;
+        break
+      case REMOVE_FOLLOWER_REQUEST:
+        draft.removeFollowerLoading = true;
+        draft.removeFollowerDone = false;
+        draft.removeFollowerError = null;
+        break
+      case REMOVE_FOLLOWER_SUCCESS:
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerDone = true;
+        draft.user.Followers = draft.user.Followers.filter((v) => v.id !== action.data.UserId)
+        break
+      case REMOVE_FOLLOWER_FAILURE:
+        draft.removeFollowerLoading = false;
+        draft.removeFollowerError = action.error;
         break
       case CHANGE_NICKNAME_REQUEST:
         draft.changeNicknameLoading = true;

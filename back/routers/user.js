@@ -121,4 +121,74 @@ router.patch('/nickname', isLoggendIn, async (req, res, next) => {
   }
 })
 
+router.patch('/:userId/follow', isLoggendIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId }});
+    if(!user) {
+      res.status(403).send('없는 유저를 팔로우 했습니다.')
+    }
+    await user.addFollowers(req.user.id)
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch(error) {
+    console.error(error);
+    next(error);
+  }
+})
+
+router.delete('/:userId/follow', isLoggendIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId }});
+    if(!user) {
+      res.status(403).send('없는 유저를 언팔로우 했습니다.')
+    }
+    await user.removeFollowers(req.user.id)
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch(error) {
+    console.error(error);
+    next(error);
+  }
+})
+
+router.get('/followers', isLoggendIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }});
+    if(!user) {
+      res.status(403).send('없는 유저를 언팔로우 했습니다.')
+    }
+    const followers =  await user.getFollowers()
+    res.status(200).json(followers);
+  } catch(error) {
+    console.error(error);
+    next(error);
+  }
+})
+
+router.get('/followings', isLoggendIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.user.id }});
+    if(!user) {
+      res.status(403).send('없는 유저를 언팔로우 했습니다.')
+    }
+    const followings =  await user.getFollowings()
+    res.status(200).json(followings);
+  } catch(error) {
+    console.error(error);
+    next(error);
+  }
+})
+
+router.delete('/follower/:userId', isLoggendIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId }});
+    if(!user) {
+      res.status(403).send('없는 유저를 차단하려고 했습니다.')
+    }
+    await user.removeFollowings(req.user.id)
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch(error) {
+    console.error(error);
+    next(error);
+  }
+})
+
 module.exports = router;
