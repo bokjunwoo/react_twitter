@@ -1,6 +1,9 @@
 import produce from 'immer'
 
 export const initialState = {
+  loadMyInfoloading: false, // 유저 정보 가져오기 시도중
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
   loadUserloading: false, // 유저 정보 가져오기 시도중
   loadUserDone: false,
   loadUserError: null,
@@ -34,11 +37,16 @@ export const initialState = {
   changeNicknameLoading: false, // 팔로우 시도중
   changeNicknameDone: false,
   changeNicknameError: null,
+  userInfo: null,
 }
 
 export const LOAD_MY_INFO_REQUEST = 'LOAD_MY_INFO_REQUEST'
 export const LOAD_MY_INFO_SUCCESS = 'LOAD_MY_INFO_SUCCESS'
 export const LOAD_MY_INFO_FAILURE = 'LOAD_MY_INFO_FAILURE'
+
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST'
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST'
 export const LOG_IN_SUCCESS = 'LOG_IN_SUCCESS'
@@ -96,16 +104,30 @@ const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
     switch (action.type) {
       case LOAD_MY_INFO_REQUEST:
-        draft.loadUserloading = true;
-        draft.loadUserError = null;
-        draft.loadUserDone = false;
+        draft.loadMyInfoloading = true;
+        draft.loadMyInfoDone = false;
+        draft.loadMyInfoError = null;
         break
       case LOAD_MY_INFO_SUCCESS:
-        draft.loadUserloading = false;
-        draft.loadUserDone = true;
+        draft.loadMyInfoloading = false;
+        draft.loadMyInfoDone = true;
         draft.user = action.data
         break
       case LOAD_MY_INFO_FAILURE:
+        draft.loadMyInfoloading = false;
+        draft.loadMyInfoError = action.error;
+        break
+      case LOAD_USER_REQUEST:
+        draft.loadUserloading = true;
+        draft.loadUserDone = false;
+        draft.loadUserError = null;
+        break
+      case LOAD_USER_SUCCESS:
+        draft.loadUserloading = false;
+        draft.loadUserDone = true;
+        draft.userInfo = action.data
+        break
+      case LOAD_USER_FAILURE:
         draft.loadUserloading = false;
         draft.loadUserError = action.error;
         break
