@@ -1,11 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Applayout from '../componets/Applayout';
 import Head from 'next/head';
 import { Checkbox, Form, Input, Button } from 'antd';
 import userInput from '../hooks/userInput';
 import styled from 'styled-components';
-import { SIGN_UP_REQUEST } from '../reducers/user';
+import { LOAD_MY_INFO_REQUEST, SIGN_UP_REQUEST } from '../reducers/user';
 import { useDispatch, useSelector } from 'react-redux';
+import Router from 'next/router';
+import wrapper from '../store/configureStore';
+import axios from 'axios';
+import { END } from 'redux-saga';
 
 const ErrorMessage = styled.div`
   color: red;
@@ -13,7 +17,25 @@ const ErrorMessage = styled.div`
 
 export default function Signup() {
   const dispatch = useDispatch();
-  const { signUpLoading } = useSelector((state) => state.user);
+  const { signUpLoading, signUpDone, signUpError, user } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if(signUpDone) {
+      Router.replace('/')
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if(signUpError) {
+      alert(signUpError)
+    }
+  }, [signUpError]);
+
+  useEffect(() => {
+    if(user && user.id) {
+      Router.replace('/');
+    }
+  }, [user && user.id])
 
   const [email, onChangeEmail] = userInput('');
   const [nickName, onChangeNickName] = userInput('');
@@ -49,7 +71,7 @@ export default function Signup() {
     console.log(email, nickName, term);
     dispatch({
       type: SIGN_UP_REQUEST,
-      data: { email, pw, nickName },
+      data: { email, nickName, pw },
     });
   }, [pw, pwCheck, term]);
 
@@ -122,3 +144,17 @@ export default function Signup() {
     </Applayout>
   );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(async (context) => {
+  const cookie = context.req ? context.req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if(context.req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  context.store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+  context.store.dispatch(END);
+  console.log('getServerSideProps end');
+  await context.store.sagaTask.toPromise();
+});
