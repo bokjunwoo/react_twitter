@@ -3,6 +3,7 @@ import React, { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { logoutRequestAction } from '../reducers/user'
+import Link from 'next/link';
 
 export default function Userprofile() {
   const dispatch = useDispatch();
@@ -15,9 +16,9 @@ export default function Userprofile() {
   return (
     <Card
       actions={[
-        <div key='twit'>짹짹<br />{user.Posts.length}</div>,
-        <div key='followings'>팔로잉<br />{user.Followings.length}</div>,
-        <div key='followers'>팔로워<br />{user.Followers.length}</div>
+        <div key="twit"><Link href={`/user/${user.id}`}><a>짹짹<br />{user.Posts.length}</a></Link></div>,
+        <div key="followings"><Link href="/profile"><a>팔로잉<br />{user.Followings.length}</a></Link></div>,
+        <div key="followings"><Link href="/profile"><a>팔로워<br />{user.Followers.length}</a></Link></div>,
       ]}
     >
       <Card.Meta 

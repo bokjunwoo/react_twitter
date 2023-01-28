@@ -19,7 +19,8 @@ import {
   RETWEET_REQUEST,
   UNLIKE_POST_REQUEST,
 } from '../reducers/post';
-import FollowButton from './ImagesZoom/FollowButton';
+import FollowButton from './FollowButton';
+import Link from 'next/link';
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
@@ -128,14 +129,22 @@ export default function PostCard({ post }) {
             }
           >
             <Card.Meta
-              avatar={<Avatar>{post.Retweet.User.nickName[0]}</Avatar>}
+              avatar={(
+                <Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
+                  <a><Avatar>{post.Retweet.User.nickName[0]}</Avatar></a>
+                </Link>
+              )}
               title={post.Retweet.User.nickName}
               description={<PostCardContent postData={post.Retweet.content} />}
             />
           </Card>
         ) : (
           <Card.Meta
-            avatar={<Avatar>{post.User.nickName[0]}</Avatar>}
+          avatar={(
+            <Link href={`/user/${post.User.id}`} prefetch={false}>
+              <a><Avatar>{post.User.nickName[0]}</Avatar></a>
+            </Link>
+          )}
             title={post.User.nickName}
             description={<PostCardContent postData={post.content} />}
           />
