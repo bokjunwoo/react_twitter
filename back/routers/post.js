@@ -216,4 +216,47 @@ router.post('/:postId/retweet', isLoggendIn, async (req, res, next) => {
   }
 });
 
+router.get('/:postId', async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: { id: req.params.postId },
+    })
+    if(!post) {
+      return res.status(404).send('존재하지 않는 게시글 입니다.')
+    }
+    const fullPost = await Post.findOne({
+      where: { id: post.id },
+      include: [{
+        model: Post,
+        as: 'Retweet',
+        include: [{
+          model: User,
+          attributes: ['id', 'nickName'],
+        }, {
+          model: Image,
+        }]
+      }, {
+        model: User,
+        attributes: ['id', 'nickName'],
+      }, {
+        model: Image,
+      }, {
+        model: Comment,
+        include: [{
+          model: User,
+          attributes: ['id', 'nickName'],
+        }],
+      }, {
+        model: User,
+        as: 'Likers',
+        attributes: ['id']
+      }],
+    })
+    res.status(200).json(fullPost)
+  } catch(error) {
+    console.error(error)
+    next(error)
+  }
+});
+
 module.exports = router;
