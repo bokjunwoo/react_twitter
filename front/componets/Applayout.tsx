@@ -5,6 +5,9 @@ import UserProfile from './UserProfile'
 import LoginForm from './LoginForm'
 import styled, { createGlobalStyle } from 'styled-components'
 import { useSelector } from 'react-redux'
+import { useCallback } from 'react'
+import userInput from '../hooks/userInput'
+import Router from 'next/router'
 
 const Global = createGlobalStyle`
   .ant-row {
@@ -26,7 +29,12 @@ const SearchInput = styled(Input.Search)`
 `
 
 export default function Applayout({ children }) {
+  const [searchInput, onChangeSearchInput] = userInput('')
   const { user } = useSelector((state) => state.user)
+
+  const onSearch = useCallback(() => {
+    Router.push(`hashtag/${searchInput}`)
+  }, [searchInput])
   
   return (
     <div>
@@ -39,7 +47,7 @@ export default function Applayout({ children }) {
           <Link href='/profile'><a>프로필</a></Link>
         </Menu.Item>
         <Menu.Item>
-          <SearchInput enterButton/>
+          <SearchInput enterButton value={searchInput} onChange={onChangeSearchInput} onSearch={onSearch}/>
         </Menu.Item>
         <Menu.Item>
           <Link href='/signup'><a>회원가입</a></Link>
