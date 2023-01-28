@@ -47,6 +47,9 @@ app.use('/post', postRouter)
 const postsRouter = require('./routers/posts')
 app.use('/posts', postsRouter)
 
+const hashtagRouter = require('./routers/hashtag')
+app.use('/hashtag', hashtagRouter)
+
 app.listen(3333, () => {
   console.log('서버 실행중')
 })
