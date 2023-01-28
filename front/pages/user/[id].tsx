@@ -43,12 +43,12 @@ const User = () => {
       {userInfo && (
         <Head>
           <title>
-            {userInfo.nickname}
+            {userInfo.nickName}
             님의 글
           </title>
-          <meta name="description" content={`${userInfo.nickname}님의 게시글`} />
-          <meta property="og:title" content={`${userInfo.nickname}님의 게시글`} />
-          <meta property="og:description" content={`${userInfo.nickname}님의 게시글`} />
+          <meta name="description" content={`${userInfo.nickName}님의 게시글`} />
+          <meta property="og:title" content={`${userInfo.nickName}님의 게시글`} />
+          <meta property="og:description" content={`${userInfo.nickName}님의 게시글`} />
           <meta property="og:image" content="https://nodebird.com/favicon.ico" />
           <meta property="og:url" content={`https://nodebird.com/user/${id}`} />
         </Head>
@@ -76,8 +76,8 @@ const User = () => {
             ]}
           >
             <Card.Meta
-              avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
-              title={userInfo.nickname}
+              avatar={<Avatar>{userInfo.nickName[0]}</Avatar>}
+              title={userInfo.nickName}
             />
           </Card>
         )
