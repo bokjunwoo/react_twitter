@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { Button, Form, Input } from 'antd'
 import Link from 'next/link'
 import styled from 'styled-components'
@@ -15,16 +15,21 @@ const FormWrapper = styled(Form)`
 `
 
 export default function LoginForm(){
-  const { logInLoading } = useSelector((state) => state.user)
+  const { logInLoading, logInError } = useSelector((state) => state.user)
   const dispatch = useDispatch();
   
   const [email, onChangeEmail] = userInput('')
   const [pw, onChangePw] = userInput('')
 
-  const onSubmitForm = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    console.log(email, pw);
+  const onSubmitForm = useCallback(() => {
     dispatch(loginRequestAction({ email, pw }))
   }, [email, pw])
+
+  useEffect(() => {
+    if(logInError) {
+      alert(logInError)
+    }
+  }, [logInError])
   
   return (
     <FormWrapper onFinish={onSubmitForm}>
