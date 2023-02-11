@@ -4,38 +4,60 @@ import {
   HeartTwoTone,
   MessageOutlined,
   RetweetOutlined,
-} from '@ant-design/icons';
-import { Avatar, Comment, Button, Card, Image, List, Popover } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import PostImages from './PostImages';
-import CommentForm from './CommentForm';
-import PostCardContent from './PostCardContent';
-import { useDispatch } from 'react-redux';
+} from "@ant-design/icons";
+import { Avatar, Comment, Button, Card, Image, List, Popover } from "antd";
+import React, { useCallback, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import PropTypes from "prop-types";
+import PostImages from "./PostImages";
+import CommentForm from "./CommentForm";
+import PostCardContent from "./PostCardContent";
+import { useDispatch } from "react-redux";
 import {
   LIKE_POST_REQUEST,
   REMOVE_POST_REQUEST,
   RETWEET_REQUEST,
   UNLIKE_POST_REQUEST,
-} from '../reducers/post';
-import FollowButton from './FollowButton';
-import Link from 'next/link';
-import moment from 'moment';
+  UPDATE_POST_SUCCESS,
+} from "../reducers/post";
+import FollowButton from "./FollowButton";
+import Link from "next/link";
+import moment from "moment";
 
-moment.locale('ko');
+moment.locale("ko");
 
 export default function PostCard({ post }) {
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.user.user?.id);
-  const { removePostLoading } = useSelector(
-    (state) => state.post
+  const [editMode, setEditMode] = useState(false);
+
+  const onClickUpdate = useCallback(() => {
+    setEditMode(true);
+  }, []);
+
+  const onCancelUpdate = useCallback(() => {
+    setEditMode(false);
+  }, []);
+
+  const onChangePost = useCallback(
+    (editText) => () => {
+      dispatch({
+        type: UPDATE_POST_SUCCESS,
+        data: {
+          PostId: post.id,
+          content: editText,
+        },
+      });
+    },
+    [post]
   );
+
+  const user = useSelector((state) => state.user.user?.id);
+  const { removePostLoading } = useSelector((state) => state.post);
 
   const onLike = useCallback(() => {
     if (!user) {
-      return alert('로그인이 필요합니다.');
+      return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: LIKE_POST_REQUEST,
@@ -45,7 +67,7 @@ export default function PostCard({ post }) {
 
   const onUnLike = useCallback(() => {
     if (!user) {
-      return alert('로그인이 필요합니다.');
+      return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: UNLIKE_POST_REQUEST,
@@ -60,7 +82,7 @@ export default function PostCard({ post }) {
 
   const onRemovePost = useCallback(() => {
     if (!user) {
-      return alert('로그인이 필요합니다.');
+      return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: REMOVE_POST_REQUEST,
@@ -70,7 +92,7 @@ export default function PostCard({ post }) {
 
   const onRetweet = useCallback(() => {
     if (!user) {
-      return alert('로그인이 필요합니다.');
+      return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: RETWEET_REQUEST,
@@ -84,26 +106,28 @@ export default function PostCard({ post }) {
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
-          <RetweetOutlined key='retweet' onClick={onRetweet} />,
+          <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
             <HeartTwoTone
-              key='heart'
+              key="heart"
               onClick={onUnLike}
-              twoToneColor='#eb2f96'
+              twoToneColor="#eb2f96"
             />
           ) : (
-            <HeartOutlined key='heart' onClick={onLike} />
+            <HeartOutlined key="heart" onClick={onLike} />
           ),
-          <MessageOutlined key='comment' onClick={onToggleComment} />,
+          <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
-            key='more'
+            key="more"
             content={
               <Button.Group>
                 {user && post.User.id === user ? (
                   <>
-                    <Button>수정</Button>
+                    {!post.RetweetId && (
+                      <Button onClick={onClickUpdate}>수정</Button>
+                    )}
                     <Button
-                      type='danger'
+                      type="danger"
                       loading={removePostLoading}
                       onClick={onRemovePost}
                     >
@@ -116,10 +140,12 @@ export default function PostCard({ post }) {
               </Button.Group>
             }
           >
-            <EllipsisOutlined key='' />
+            <EllipsisOutlined key="" />
           </Popover>,
         ]}
-        title={post.RetweetId ? `${post.User.nickName} 님이 리트윗 했습니다` : null}
+        title={
+          post.RetweetId ? `${post.User.nickName} 님이 리트윗 했습니다` : null
+        }
         extra={user && <FollowButton post={post} />}
       >
         <Image />
@@ -131,28 +157,49 @@ export default function PostCard({ post }) {
               )
             }
           >
-            <div style={{ float: 'right' }}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+            <div style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </div>
             <Card.Meta
-              avatar={(
+              avatar={
                 <Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
-                  <a><Avatar>{post.Retweet.User.nickName[0]}</Avatar></a>
+                  <a>
+                    <Avatar>{post.Retweet.User.nickName[0]}</Avatar>
+                  </a>
                 </Link>
-              )}
+              }
               title={post.Retweet.User.nickName}
-              description={<PostCardContent postData={post.Retweet.content} />}
+              description={
+                <PostCardContent
+                  postData={post.Retweet.content}
+                  onChangePost={onChangePost}
+                  onCancelUpdate={onCancelUpdate}
+                />
+              }
             />
           </Card>
         ) : (
           <>
-            <div style={{ float: 'right' }}>{moment(post.createdAt).format('YYYY.MM.DD')}</div>
+            <div style={{ float: "right" }}>
+              {moment(post.createdAt).format("YYYY.MM.DD")}
+            </div>
             <Card.Meta
-            avatar={(
-              <Link href={`/user/${post.User.id}`} prefetch={false}>
-                <a><Avatar>{post.User.nickName[0]}</Avatar></a>
-              </Link>
-            )}
+              avatar={
+                <Link href={`/user/${post.User.id}`} prefetch={false}>
+                  <a>
+                    <Avatar>{post.User.nickName[0]}</Avatar>
+                  </a>
+                </Link>
+              }
               title={post.User.nickName}
-              description={<PostCardContent postData={post.content} />}
+              description={
+                <PostCardContent
+                  postData={post.content}
+                  editMode={editMode}
+                  onChangePost={onChangePost}
+                  onCancelUpdate={onCancelUpdate}
+                />
+              }
             />
           </>
         )}
@@ -162,7 +209,7 @@ export default function PostCard({ post }) {
           <CommentForm post={post} />
           <List
             header={`${post.Comments.length}개의 댓글`}
-            itemLayout='horizontal'
+            itemLayout="horizontal"
             dataSource={post.Comments}
             renderItem={(item) => (
               <li>
