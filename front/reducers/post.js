@@ -1,4 +1,4 @@
-import produce from 'immer'
+import produce from "immer";
 
 export const initialState = {
   mainPosts: [
@@ -46,6 +46,9 @@ export const initialState = {
   removePostLoading: false,
   removePostDone: false,
   removePostError: null,
+  updatePostLoading: false,
+  updatePostDone: false,
+  updatePostError: null,
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
@@ -61,7 +64,7 @@ export const initialState = {
   retweetLoading: false,
   retweetDone: false,
   retweetError: null,
-}
+};
 /*
 export const generateDummyPost = (number) => Array(number).fill().map((v, i) => ({
   id: shortId.generate(),
@@ -82,61 +85,65 @@ export const generateDummyPost = (number) => Array(number).fill().map((v, i) => 
   }]
 }));
 */
-export const LOAD_POST_REQUEST = 'LOAD_POST_REQUEST'
-export const LOAD_POST_SUCCESS = 'LOAD_POST_SUCCESS'
-export const LOAD_POST_FAILURE = 'LOAD_POST_FAILURE'
+export const LOAD_POST_REQUEST = "LOAD_POST_REQUEST";
+export const LOAD_POST_SUCCESS = "LOAD_POST_SUCCESS";
+export const LOAD_POST_FAILURE = "LOAD_POST_FAILURE";
 
-export const LOAD_POSTS_REQUEST = 'LOAD_POSTS_REQUEST'
-export const LOAD_POSTS_SUCCESS = 'LOAD_POSTS_SUCCESS'
-export const LOAD_POSTS_FAILURE = 'LOAD_POSTS_FAILURE'
+export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
+export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
+export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
 
-export const LOAD_USER_POSTS_REQUEST = 'LOAD_USER_POSTS_REQUEST'
-export const LOAD_USER_POSTS_SUCCESS = 'LOAD_USER_POSTS_SUCCESS'
-export const LOAD_USER_POSTS_FAILURE = 'LOAD_USER_POSTS_FAILURE'
+export const LOAD_USER_POSTS_REQUEST = "LOAD_USER_POSTS_REQUEST";
+export const LOAD_USER_POSTS_SUCCESS = "LOAD_USER_POSTS_SUCCESS";
+export const LOAD_USER_POSTS_FAILURE = "LOAD_USER_POSTS_FAILURE";
 
-export const LOAD_HASHTAG_POSTS_REQUEST = 'LOAD_HASHTAG_POSTS_REQUEST'
-export const LOAD_HASHTAG_POSTS_SUCCESS = 'LOAD_HASHTAG_POSTS_SUCCESS'
-export const LOAD_HASHTAG_POSTS_FAILURE = 'LOAD_HASHTAG_POSTS_FAILURE'
+export const LOAD_HASHTAG_POSTS_REQUEST = "LOAD_HASHTAG_POSTS_REQUEST";
+export const LOAD_HASHTAG_POSTS_SUCCESS = "LOAD_HASHTAG_POSTS_SUCCESS";
+export const LOAD_HASHTAG_POSTS_FAILURE = "LOAD_HASHTAG_POSTS_FAILURE";
 
-export const ADD_POST_REQUEST = 'ADD_POST_REQUEST'
-export const ADD_POST_SUCCESS = 'ADD_POST_SUCCESS'
-export const ADD_POST_FAILURE = 'ADD_POST_FAILURE'
+export const ADD_POST_REQUEST = "ADD_POST_REQUEST";
+export const ADD_POST_SUCCESS = "ADD_POST_SUCCESS";
+export const ADD_POST_FAILURE = "ADD_POST_FAILURE";
 
-export const REMOVE_POST_REQUEST = 'REMOVE_POST_REQUEST'
-export const REMOVE_POST_SUCCESS = 'REMOVE_POST_SUCCESS'
-export const REMOVE_POST_FAILURE = 'REMOVE_POST_FAILURE'
+export const UPDATE_POST_REQUEST = "UPDATE_POST_REQUEST";
+export const UPDATE_POST_SUCCESS = "UPDATE_POST_SUCCESS";
+export const UPDATE_POST_FAILURE = "UPDATE_POST_FAILURE";
 
-export const ADD_COMMENT_REQUEST = 'ADD_COMMENT_REQUEST'
-export const ADD_COMMENT_SUCCESS = 'ADD_COMMENT_SUCCESS'
-export const ADD_COMMENT_FAILURE = 'ADD_COMMENT_FAILURE'
+export const REMOVE_POST_REQUEST = "REMOVE_POST_REQUEST";
+export const REMOVE_POST_SUCCESS = "REMOVE_POST_SUCCESS";
+export const REMOVE_POST_FAILURE = "REMOVE_POST_FAILURE";
 
-export const LIKE_POST_REQUEST = 'LIKE_POST_REQUEST'
-export const LIKE_POST_SUCCESS = 'LIKE_POST_SUCCESS'
-export const LIKE_POST_FAILURE = 'LIKE_POST_FAILURE'
+export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
+export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
+export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
-export const UNLIKE_POST_REQUEST = 'UNLIKE_POST_REQUEST'
-export const UNLIKE_POST_SUCCESS = 'UNLIKE_POST_SUCCESS'
-export const UNLIKE_POST_FAILURE = 'UNLIKE_POST_FAILURE'
+export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
+export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
+export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
 
-export const UPLOAD_IMAGES_REQUEST = 'UPLOAD_IMAGES_REQUEST'
-export const UPLOAD_IMAGES_SUCCESS = 'UPLOAD_IMAGES_SUCCESS'
-export const UPLOAD_IMAGES_FAILURE = 'UPLOAD_IMAGES_FAILURE'
+export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
+export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
+export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 
-export const RETWEET_REQUEST = 'RETWEET_REQUEST'
-export const RETWEET_SUCCESS = 'RETWEET_SUCCESS'
-export const RETWEET_FAILURE = 'RETWEET_FAILURE'
+export const UPLOAD_IMAGES_REQUEST = "UPLOAD_IMAGES_REQUEST";
+export const UPLOAD_IMAGES_SUCCESS = "UPLOAD_IMAGES_SUCCESS";
+export const UPLOAD_IMAGES_FAILURE = "UPLOAD_IMAGES_FAILURE";
 
-export const REMOVE_IMAGE = 'REMOVE_IMAGE'
+export const RETWEET_REQUEST = "RETWEET_REQUEST";
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
+export const RETWEET_FAILURE = "RETWEET_FAILURE";
+
+export const REMOVE_IMAGE = "REMOVE_IMAGE";
 
 export const addPost = (data) => ({
   type: ADD_POST_REQUEST,
   data,
-})
+});
 
 export const addComment = (data) => ({
   type: ADD_COMMENT_REQUEST,
   data,
-})
+});
 
 const reducer = (state = initialState, action) => {
   return produce(state, (draft) => {
@@ -180,36 +187,53 @@ const reducer = (state = initialState, action) => {
         draft.addPostLoading = true;
         draft.addPostDone = false;
         draft.addPostError = null;
-        break
+        break;
       case ADD_POST_SUCCESS:
-        draft.mainPosts.unshift(action.data)
+        draft.mainPosts.unshift(action.data);
         draft.addPostLoading = false;
         draft.addPostDone = true;
         draft.imagePaths = [];
-        break
+        break;
       case ADD_POST_FAILURE:
         draft.addPostLoading = false;
         draft.addPostError = action.error;
-        break
+        break;
+      case UPDATE_POST_REQUEST:
+        draft.updatePostLoading = true;
+        draft.updatePostDone = false;
+        draft.updatePostError = null;
+        break;
+      case UPDATE_POST_SUCCESS:
+        draft.updatePostLoading = false;
+        draft.updatePostDone = true;
+        draft.mainPosts.find((v) => v.id === action.data.PostId).content =
+          action.data.content;
+        break;
+      case UPDATE_POST_FAILURE:
+        draft.updatePostLoading = false;
+        draft.updatePostError = action.error;
+        break;
       case REMOVE_POST_REQUEST:
         draft.removePostLoading = true;
         draft.removePostDone = false;
         draft.removePostError = null;
-        break
+        break;
       case REMOVE_POST_SUCCESS:
         draft.removePostLoading = false;
         draft.removePostDone = true;
-        draft.mainPosts = draft.mainPosts.filter((v) => v.id !== action.data.PostId);
-        break
+        draft.mainPosts = draft.mainPosts.filter(
+          (v) => v.id !== action.data.PostId
+        );
+        break;
       case REMOVE_POST_FAILURE:
         draft.removePostLoading = false;
-        draft.removePostError = action.error
-        break
+        draft.removePostError = action.error;
+        break;
       case ADD_COMMENT_REQUEST:
         draft.addCommentLoading = true;
         draft.addCommentDone = false;
         draft.addCommentError = null;
-        break
+        break;
       case ADD_COMMENT_SUCCESS:
         const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
         post.Comments.unshift(action.data);
@@ -226,80 +250,80 @@ const reducer = (state = initialState, action) => {
         //   addCommentLoading: false,
         //   addCommentDone: true,
         // }
-        break
+        break;
       case ADD_COMMENT_FAILURE:
         draft.addCommentLoading = false;
         draft.addCommentError = action.error;
-        break
+        break;
       case LIKE_POST_REQUEST:
         draft.likePostLoading = true;
         draft.likePostDone = false;
         draft.likePostError = null;
-        break
+        break;
       case LIKE_POST_SUCCESS: {
         const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
         post.Likers.push({ id: action.data.UserId });
         draft.likePostLoading = false;
         draft.likePostDone = true;
-        break
+        break;
       }
       case LIKE_POST_FAILURE:
         draft.likePostLoading = false;
         draft.likePostError = action.error;
-        break
+        break;
       case UNLIKE_POST_REQUEST:
         draft.unlikePostLoading = true;
         draft.unlikePostDone = false;
         draft.unlikePostError = null;
-        break
+        break;
       case UNLIKE_POST_SUCCESS: {
         const post = draft.mainPosts.find((v) => v.id === action.data.PostId);
         post.Likers = post.Likers.filter((v) => v.id !== action.data.UserId);
         draft.unlikePostLoading = false;
         draft.unlikePostDone = true;
-        break
+        break;
       }
       case UNLIKE_POST_FAILURE:
         draft.unlikePostLoading = false;
         draft.unlikePostError = action.error;
-        break
+        break;
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;
         draft.uploadImagesError = null;
-        break
+        break;
       case UPLOAD_IMAGES_SUCCESS: {
-        draft.imagePaths = action.data
+        draft.imagePaths = action.data;
         draft.uploadImagesLoading = false;
         draft.uploadImagesDone = true;
-        break
+        break;
       }
       case UPLOAD_IMAGES_FAILURE:
         draft.uploadImagesLoading = false;
         draft.uploadImagesError = action.error;
-        break
+        break;
       case RETWEET_REQUEST:
         draft.retweetLoading = true;
         draft.retweetDone = false;
         draft.retweetError = null;
-        break
+        break;
       case RETWEET_SUCCESS: {
         draft.retweetLoading = false;
         draft.retweetDone = true;
-        draft.mainPosts.unshift(action.data)
-        break
+        draft.mainPosts.unshift(action.data);
+        break;
       }
       case RETWEET_FAILURE:
         draft.retweetLoading = false;
         draft.retweetError = action.error;
-        break
+        break;
       case REMOVE_IMAGE:
         draft.imagePaths = draft.imagePaths.filter((v, i) => i !== action.data);
-        break
+        break;
       default:
-        return state
+        return state;
     }
-  })
-}
+  });
+};
 
-export default reducer
+export default reducer;
