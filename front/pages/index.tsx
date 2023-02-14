@@ -38,6 +38,7 @@ const Index = () => {
       window.removeEventListener('scroll', onScroll);
     };
   }, [hasMorePosts, loadPostsLoading, mainPosts]);
+
   return (
     <Applayout>
       {user && <PostForm />}
